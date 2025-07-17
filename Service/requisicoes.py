@@ -1,7 +1,7 @@
 import requests
 from datetime import datetime, timezone
 from Model.meu_usuario import json_para_meu_user
-from pegar_chave import minha_chave
+from Utils.obter_chave import minha_chave
 from Utils.converter_horario import convert_to_br 
 from typing import Optional
 
