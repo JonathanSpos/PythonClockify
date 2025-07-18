@@ -2,7 +2,7 @@ import requests
 from datetime import datetime, timezone
 from Model.meu_usuario import json_para_meu_user
 from Utils.obter_chave import minha_chave
-from Utils.converter_horario import convert_to_br 
+from Utils.converter_horario import convert_to_br, horario_agora_iso
 from typing import Optional
 
 
@@ -75,10 +75,11 @@ class ClockifyClient:
 
         if not self.tem_entry_ativa():
             return "Nenhum time entry ativo"
-        
+
         entry = entries[0]
-        description = entry.get("Descrição") or "Sem descrição"
-        start_iso = entry.get("TimeInterval", {}.get("start"))
+        description = entry.get("description") or "Sem descrição"
+        start_iso = entry.get("timeInterval", {}).get("start")
+        
 
         try:
             start_formatado = convert_to_br(start_iso)
@@ -93,7 +94,7 @@ class ClockifyClient:
         usuario = json_para_meu_user(self.get_user_info())
         workspace_id = usuario.activeWorkspace
         endpoint = f"workspaces/{workspace_id}/time-entries"
-        start_time_utc = datetime.now(timezone.utc).replace(microsecond=0).isoformat()
+        start_time_utc = horario_agora_iso()
 
         data = {
             "start": start_time_utc,
@@ -116,8 +117,11 @@ class ClockifyClient:
         user_id = usuario.id
 
         endpoint = f"workspaces/{workspace_id}/user/{user_id}/time-entries"
-        end_time = datetime.now(timezone.utc).replace(microsecond=0).isoformat()
-        data = {"end": end_time}
+        end_time = horario_agora_iso()
+        
+        data = {
+            "end": end_time
+                }
 
         try:
             res = self._patch(endpoint, data)
