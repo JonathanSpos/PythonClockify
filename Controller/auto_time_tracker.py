@@ -17,8 +17,10 @@ def auto_time_tracker(clockify_client: ClockifyClient):
                 clockify_client.stop_active_time_entry()
                 break
 
-            sleep(0.25)
+            if keyboard.is_pressed("F9"):
+                print(clockify_client.get_active_time_entry())
 
+            sleep(1)
             janela = retornar_nome_processo_janela_ativa()
             titulo_padronizado = padronizar_titulo(janela)
 
@@ -31,6 +33,7 @@ def auto_time_tracker(clockify_client: ClockifyClient):
                 clockify_client.stop_active_time_entry()
                 clockify_client.create_time_entry(titulo_padronizado)
                 janela_anterior = titulo_padronizado
+                sleep(1)
 
         # Sinalizar que foi encerrado manualmente
         except KeyboardInterrupt:
